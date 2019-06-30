@@ -19,6 +19,13 @@ class Register extends Component {
   };
 
   render() {
+    const listOfYears = [];
+    for (let i = 0; i < 99; i++) {
+      listOfYears.push(i);
+    }
+    const ageDropDown = listOfYears.map(year => {
+      return <option key={year}>{year}</option>;
+    });
     return (
       <div>
         <form>
@@ -32,7 +39,10 @@ class Register extends Component {
             onChange={this.handleInputChange}
           />
           <br />
-          Age <input type="text" name="age" onChange={this.handleInputChange} />
+          Age{" "}
+          <select onChange={this.handleInputChange} name="age">
+            {ageDropDown}
+          </select>
           <br />
           Role
           <select onChange={this.handleInputChange} name="role">
