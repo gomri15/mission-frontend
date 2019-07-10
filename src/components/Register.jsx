@@ -1,11 +1,32 @@
+/* eslint-disable no-undef */
+/* eslint-disable default-case */
 import React, { Component } from "react";
+import Axios from "axios";
+
+import { API, API_PORT, REGISTER_URL } from "./../config";
+import { validate } from "./../utils/validate"
+
+let initalState = {
+  name: "",
+  age: 0,
+  password: "",
+  role: "",
+  nameError: "",
+  passwordError: "",
+  ageError: "",
+  roleError: "",
+  submitError: ""
+};
 
 class Register extends Component {
-  state = { name: "", age: "", password: "", role: "" };
+  constructor(props) {
+    super(props);
+    this.state = initalState;
+  }
 
   handleInputChange = event => {
     const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
+    const value = target.value;
     const name = target.name;
 
     this.setState({
@@ -13,9 +34,47 @@ class Register extends Component {
     });
   };
 
-  handleSubmit = event => {
+  parseData = () => {
+    const [validName, nameError] = validate("name", this.state.name);
+    const [validPassword, passwordError] = validate(
+      "password",
+      this.state.password
+    );
+    const [validAge, ageError] = validate("age", this.state.age);
+    const [validrole, roleError] = validate("role", this.state.role);
+    if (validName && validPassword && validAge && validrole) {
+      return true;
+    } else {
+      this.setState({
+        nameError,
+        passwordError,
+        ageError,
+        roleError
+      });
+    }
+  };
+
+  handleSubmit = async event => {
     event.preventDefault();
-    console.log(this.state);
+    if (this.parseData()) {
+      const payload = {
+        name: this.state.name,
+        password: this.state.password,
+        age: this.state.age,
+        role: this.state.role
+      };
+      try {
+        const res = await Axios.post(
+          `${API}:${API_PORT}${REGISTER_URL}`,
+          payload
+        );
+        console.log(res);
+        this.setState(initalState);
+      } catch (error) {
+        this.setState({ submitError: "Failed to connect to server " });
+        throw error;
+      }
+    }
   };
 
   render() {
@@ -29,38 +88,64 @@ class Register extends Component {
     return (
       <div>
         <form>
-          Name{" "}
-          <input type="text" name="name" onChange={this.handleInputChange} />
-          <br />
-          Password
-          <input
-            type="password"
-            name="password"
-            onChange={this.handleInputChange}
-          />
-          <br />
-          Age{" "}
-          <select onChange={this.handleInputChange} name="age">
-            {ageDropDown}
-          </select>
-          <br />
-          Role
-          <select onChange={this.handleInputChange} name="role">
-            <option defaultValue="" />
-            <option>Druid</option>
-            <option>Paladin</option>
-            <option>Sorcerer</option>
-            <option>Knight</option>
-          </select>
-          <br />
-          <button
-            type="submit"
-            value="Submit"
-            className="btn btn-primary"
-            onClick={this.handleSubmit}
-          >
-            Submit
-          </button>
+          <div>
+            <label>Name</label>
+            <input
+              type="text"
+              name="name"
+              onChange={this.handleInputChange}
+              value={this.state.name}
+            />
+            <br />
+            {this.state.nameError}
+          </div>
+          <div>
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              onChange={this.handleInputChange}
+              value={this.state.password}
+            />
+            {this.state.passwordError}
+          </div>
+          <div>
+            <label>Age</label>
+            <select
+              onChange={this.handleInputChange}
+              name="age"
+              value={this.state.age}
+            >
+              {ageDropDown}
+            </select>
+            {this.state.ageError}
+          </div>
+          <div>
+            <label>Role</label>
+            <select
+              onChange={this.handleInputChange}
+              name="role"
+              value={this.state.role}
+            >
+              <option defaultValue="" />
+              <option>Druid</option>
+              <option>Paladin</option>
+              <option>Sorcerer</option>
+              <option>Knight</option>
+            </select>
+            {this.state.roleError}
+          </div>
+          <div>
+            <button
+              type="submit"
+              value="Submit"
+              className="btn btn-primary"
+              onClick={this.handleSubmit}
+            >
+              Submit
+            </button>
+            {this.state.submitError}
+          </div>
         </form>
       </div>
     );
