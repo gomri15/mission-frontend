@@ -3,11 +3,12 @@ import React, {
 } from 'react';
 import Axios from 'axios';
 
-import { API, API_PORT, LOGIN_URL } from "./../config";
+import { API, API_PORT, LOGIN_ROUTE } from "./../config";
 
 const initalState = {
     username: "",
-    password: ""
+    password: "",
+    loginError: ""
 }
 
 class LoginFrom extends Component {
@@ -30,11 +31,11 @@ class LoginFrom extends Component {
             password: this.state.password
         }
         const res = await Axios.post(
-            `${API}:${API_PORT}${LOGIN_URL}`,
+            `${API}:${API_PORT}${LOGIN_ROUTE}`,
             payload
         );
         // const loginRes = await res.json()
-        console.log(res.data);
+        alert("Login successfull")
     }
 
     render() {
@@ -46,12 +47,14 @@ class LoginFrom extends Component {
                     onChange={this.handleInputChange}
                     value={this.state.username} >
                 </input>
+                {this.state.loginError}
                 <label>Password</label>
                 <input type="password"
                     name="password"
                     onChange={this.handleInputChange}
                     value={this.state.password} >
                 </input>
+                {this.state.loginError}
                 <button
                     type="submit"
                     value="Submit"
