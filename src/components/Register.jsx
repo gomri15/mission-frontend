@@ -1,10 +1,8 @@
-/* eslint-disable no-undef */
-/* eslint-disable default-case */
 import React, { Component } from "react";
 import Axios from "axios";
 
-import { API, API_PORT, REGISTER_URL } from "./../config";
-import { validate } from "./../utils/validate"
+import { API, API_PORT, PLAYERS_ROUTE, USERNAME_CHECK_ROUTE } from "./../config";
+import { validateFields, usernameExists } from "./../utils/validate"
 
 let initalState = {
   name: "",
@@ -35,13 +33,13 @@ class Register extends Component {
   };
 
   parseData = () => {
-    const [validName, nameError] = validate("name", this.state.name);
-    const [validPassword, passwordError] = validate(
+    const [validName, nameError] = validateFields("name", this.state.name);
+    const [validPassword, passwordError] = validateFields(
       "password",
       this.state.password
     );
-    const [validAge, ageError] = validate("age", this.state.age);
-    const [validrole, roleError] = validate("role", this.state.role);
+    const [validAge, ageError] = validateFields("age", this.state.age);
+    const [validrole, roleError] = validateFields("role", this.state.role);
     if (validName && validPassword && validAge && validrole) {
       return true;
     } else {
@@ -65,7 +63,7 @@ class Register extends Component {
       };
       try {
         const res = await Axios.post(
-          `${API}:${API_PORT}${REGISTER_URL}`,
+          `${API}:${API_PORT}${PLAYERS_ROUTE}`,
           payload
         );
         console.log(res);
