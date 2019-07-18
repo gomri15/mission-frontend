@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Axios from "axios";
 
-import { API, API_PORT, PLAYERS_ROUTE, USERNAME_CHECK_ROUTE } from "./../config";
-import { validateFields, usernameExists } from "./../utils/validate"
+import { API, API_PORT, PLAYERS_ROUTE } from "./../config";
+import { validateFields } from "./../utils/validate"
+import styled from 'styled-components'
 
 let initalState = {
   name: "",
@@ -15,6 +16,15 @@ let initalState = {
   roleError: "",
   submitError: ""
 };
+
+const Button = styled.button`
+  background-color: lightblue;
+  width: 15%
+`
+
+const FromWrapper = styled.form`
+
+`
 
 class Register extends Component {
   constructor(props) {
@@ -32,14 +42,14 @@ class Register extends Component {
     });
   };
 
-  parseData = () => {
-    const [validName, nameError] = validateFields("name", this.state.name);
-    const [validPassword, passwordError] = validateFields(
+  parseData = async () => {
+    const [validName, nameError] = await validateFields("name", this.state.name);
+    const [validPassword, passwordError] = await validateFields(
       "password",
       this.state.password
     );
-    const [validAge, ageError] = validateFields("age", this.state.age);
-    const [validrole, roleError] = validateFields("role", this.state.role);
+    const [validAge, ageError] = await validateFields("age", this.state.age);
+    const [validrole, roleError] = await validateFields("role", this.state.role);
     if (validName && validPassword && validAge && validrole) {
       return true;
     } else {
@@ -54,7 +64,7 @@ class Register extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-    if (this.parseData()) {
+    if (await this.parseData()) {
       const payload = {
         name: this.state.name,
         password: this.state.password,
@@ -62,11 +72,11 @@ class Register extends Component {
         role: this.state.role
       };
       try {
-        const res = await Axios.post(
+        await Axios.post(
           `${API}:${API_PORT}${PLAYERS_ROUTE}`,
           payload
         );
-        console.log(res);
+        // console.log(res);
         this.setState(initalState);
       } catch (error) {
         this.setState({ submitError: "Failed to connect to server " });
@@ -134,14 +144,15 @@ class Register extends Component {
             {this.state.roleError}
           </div>
           <div>
-            <button
+            <Button
               type="submit"
               value="Submit"
               className="btn btn-primary"
               onClick={this.handleSubmit}
             >
               Submit
-            </button>
+            </Button>
+
             {this.state.submitError}
           </div>
         </form>

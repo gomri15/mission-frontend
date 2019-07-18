@@ -1,7 +1,7 @@
 import Axios from "axios";
 import { API, API_PORT, USERNAME_CHECK_ROUTE, PLAYERS_ROUTE } from "./../config";
 
-const validateFields = (type, data) => {
+const validateFields = async (type, data) => {
     const strongRegex = new RegExp(
         "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
     );
@@ -10,6 +10,7 @@ const validateFields = (type, data) => {
     let errorInvalidChars = "Password is not stronge enough";
     let errorToYoung = "You must be 18+ to submit";
     let errorUsernameAlreadyExists = "User name already exists";
+    let errorUnableToReachServer = 'Unable to verify username with server'
     let errorReason = "";
     let valid = true;
 
@@ -25,13 +26,19 @@ const validateFields = (type, data) => {
                 valid = false;
                 errorReason = errorToShortField;
             }
-
-            usernameExists(data)
-                .then(response => {
-                    if (response) {
-
-                    }
-                })
+            try {
+                const result = await usernameExists(data)
+                if (!result) {
+                    valid = false
+                    errorReason = errorUnableToReachServer
+                }
+                else if (result.players[0]) {
+                    valid = false
+                    errorReason = errorUsernameAlreadyExists
+                }
+            } catch (error) {
+                console.log(error)
+            }
             break;
 
         case "age":
@@ -65,11 +72,6 @@ const usernameExists = async (username) => {
     } catch (error) {
         return error
     }
-    // Axios.get(`${API}:${API_PORT}${PLAYERS_ROUTE}${USERNAME_CHECK_ROUTE}/${username}`)
-    //     .then(result => {
-    //         return result.data
-    //     })
-    //     .catch(error => console.log(error))
 }
 
 export {
