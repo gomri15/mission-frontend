@@ -3,7 +3,11 @@ import Axios from "axios";
 
 import { API, API_PORT, PLAYERS_ROUTE } from "./../config";
 import { validateFields } from "./../utils/validate"
-import styled from 'styled-components'
+import { MyFormWrapper } from "../componentsStyle/MyFormWrapper"
+import { MyButton } from "../componentsStyle/MyButton"
+import { MyErrorLabel } from "../componentsStyle/MyErrorLabel"
+import { MyLabel } from "../componentsStyle/MyLabel"
+
 
 let initalState = {
   name: "",
@@ -16,15 +20,6 @@ let initalState = {
   roleError: "",
   submitError: ""
 };
-
-const Button = styled.button`
-  background-color: lightblue;
-  width: 15%
-`
-
-const FromWrapper = styled.form`
-
-`
 
 class Register extends Component {
   constructor(props) {
@@ -95,9 +90,9 @@ class Register extends Component {
     });
     return (
       <div>
-        <form>
+        <MyFormWrapper>
           <div>
-            <label>Name</label>
+            <MyLabel>Name</MyLabel>
             <input
               type="text"
               name="name"
@@ -105,20 +100,20 @@ class Register extends Component {
               value={this.state.name}
             />
             <br />
-            {this.state.nameError}
+            <MyErrorLabel>{this.state.nameError}</MyErrorLabel>
           </div>
           <div>
-            <label>Password</label>
+            <MyLabel>Password</MyLabel>
             <input
               type="password"
               name="password"
               onChange={this.handleInputChange}
               value={this.state.password}
             />
-            {this.state.passwordError}
+            <MyErrorLabel>{this.state.passwordError}</MyErrorLabel>
           </div>
           <div>
-            <label>Age</label>
+            <MyLabel>Age</MyLabel>
             <select
               onChange={this.handleInputChange}
               name="age"
@@ -126,10 +121,10 @@ class Register extends Component {
             >
               {ageDropDown}
             </select>
-            {this.state.ageError}
+            <MyErrorLabel>{this.state.ageError}</MyErrorLabel>
           </div>
           <div>
-            <label>Role</label>
+            <MyLabel>Role</MyLabel>
             <select
               onChange={this.handleInputChange}
               name="role"
@@ -141,21 +136,21 @@ class Register extends Component {
               <option>Sorcerer</option>
               <option>Knight</option>
             </select>
-            {this.state.roleError}
+            <MyErrorLabel>{this.state.roleError}</MyErrorLabel>
           </div>
           <div>
-            <Button
+            <MyButton
               type="submit"
               value="Submit"
               className="btn btn-primary"
               onClick={this.handleSubmit}
             >
               Submit
-            </Button>
+            </MyButton>
 
-            {this.state.submitError}
+            <MyErrorLabel>{this.state.submitError}</MyErrorLabel>
           </div>
-        </form>
+        </MyFormWrapper>
       </div>
     );
   }

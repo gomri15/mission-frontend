@@ -4,6 +4,9 @@ import React, {
 import Axios from 'axios';
 
 import { API, API_PORT, LOGIN_ROUTE } from "./../config";
+import { MyButton } from "../componentsStyle/MyButton"
+import { MyErrorLabel } from "../componentsStyle/MyErrorLabel"
+import { MyLabel } from "../componentsStyle/MyLabel"
 
 const initalState = {
     username: "",
@@ -41,28 +44,28 @@ class LoginFrom extends Component {
     render() {
         return (<div>
             <form>
-                <label>Username</label>
+                <MyLabel>Username</MyLabel>
                 <input type="text"
                     name="username"
                     onChange={this.handleInputChange}
                     value={this.state.username} >
                 </input>
                 {this.state.loginError}
-                <label>Password</label>
+                <MyLabel>Password</MyLabel>
                 <input type="password"
                     name="password"
                     onChange={this.handleInputChange}
                     value={this.state.password} >
                 </input>
-                {this.state.loginError}
-                <button
+                <MyErrorLabel>{this.state.loginError}</MyErrorLabel>
+                <MyButton
                     type="submit"
                     value="Submit"
                     className="btn btn-primary"
                     onClick={this.handleSubmit}
                 >
                     Submit
-              </button>
+              </MyButton>
             </form>
         </div>);
     }
